@@ -1,45 +1,46 @@
 #include <stdlib.h>
 #include <stdbool.h>
-#include <string.h>
-#include <ctype.h>
+#include <stdio.h>
 
-bool checkVowel(char C) {
-	char c = tolower(C);
+#define BUF_SIZE 1024
+
+bool check_Vowel(char C) {
+	char c = tolower(c);
 	if (c == 'a' || c == 'e' || c =='i' || c == 'o' || c == 'u') {
 		return true;
 	}
 	return false;
 }
 
-int countConsonant (char *str) {
-	int count = 0;
-	int length = strlen(str);
-	for (int i = 0; i < length; i++) {
-		if (!checkVowel(str[i])) {
-			count++;
+int get_non_vowels(int num_chars, char* in_buf, char* out_buf) {
+	int i;
+	int length = 0;
+	for (i = 0; i < num_chars; i++) {
+		if (!check_Vowel(in_buf[i]) == false) {
+			out_buf[length] = in_buf[i];
+			length++;
 		}
 	}
-	return count;
+	return length;
 }
 
-char *file_disemvowel(char *str) {
-	int length = strlen(str);
-	int numConsonants = countConsonant(str);
-	char *newStr = (char*) calloc(numConsonants + 1, sizeof(char));
+void file_disemvowel(FILE* inputFile, FILE* outputFile) {
 
-	int newIndex = 0;
-	for (int old = 0; old < length; old++) {
-		if(!checkVowel(str[old])) {
-			newStr[newIndex] = str[old];
-			newIndex++;
-		}
+	char *in_buf = (char*) calloc(BUF_SIZE, sizeof(char));
+	char *out_buf = (char*) calloc(BUF_SIZE, sizeof(char));
+
+	int j = 0;
+	int i = BUF_SIZE;
+
+	while (i == BUF_SIZE) {
+		i = fread(in_buf, sizeof(char), BUF_SIZE, inputFile);
+		j = get_non_vowels(i, in_buf, out_buf);
+
+		fwrite(out_buf, sizeof(char), j, outputFile);
 	}
-	newStr[newIndex] = '\0';
-	return newStr;
-	
-	free(newStr);
+	free(in_buf);
+	free(out_buf);
 }
-
 
 int main(int argc, char*argv[]) {
 
@@ -52,7 +53,7 @@ int main(int argc, char*argv[]) {
 	}
 	else if(argc == 2){
 		inputFile = fopen(argv[1], "r");
-		outputFIle = stdout;
+		outputFile = stdout;
 	}
 	else if(argc == 3){
 		inputFile = fopen(argv[1], "r");
