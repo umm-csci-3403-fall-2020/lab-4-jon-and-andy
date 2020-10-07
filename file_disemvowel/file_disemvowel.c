@@ -4,6 +4,7 @@
 
 #define BUF_SIZE 1024
 
+//Checks if character is vowel
 bool check_Vowel(char C) {
 	char c = tolower(c);
 	if (c == 'a' || c == 'e' || c =='i' || c == 'o' || c == 'u') {
@@ -12,6 +13,7 @@ bool check_Vowel(char C) {
 	return false;
 }
 
+//Grabs all non vowels
 int get_non_vowels(int num_chars, char* in_buf, char* out_buf) {
 	int i;
 	int length = 0;
@@ -24,6 +26,7 @@ int get_non_vowels(int num_chars, char* in_buf, char* out_buf) {
 	return length;
 }
 
+//Grabs all the non vowels and sends them to outputFile
 void file_disemvowel(FILE* inputFile, FILE* outputFile) {
 
 	char *in_buf = (char*) calloc(BUF_SIZE, sizeof(char));
@@ -40,6 +43,9 @@ void file_disemvowel(FILE* inputFile, FILE* outputFile) {
 	}
 	free(in_buf);
 	free(out_buf);
+
+	fclose(inputFile);
+	fclose(outputFile);
 }
 
 int main(int argc, char*argv[]) {
