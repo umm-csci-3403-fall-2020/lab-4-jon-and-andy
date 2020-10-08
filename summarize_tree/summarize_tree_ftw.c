@@ -18,8 +18,9 @@ int main(int argc, char** argv) {
 
 	ftw(argv[1], callback, MAX_FTW_DEPTH);
 
-	printf("There were %i directories\n", dirCount);
-	printf("There were %i files", files);
+	printf("There were %d directories.", dirCount);
+	printf("\n");
+	printf("There were %d regular files.", files);
 
 	return 0;
 }
