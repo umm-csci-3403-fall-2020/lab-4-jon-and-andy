@@ -12,38 +12,44 @@ bool is_dir(const char* path) {
   struct stat buf;
 
   if(stat(path, &buf) == 0) {
-	  if(S_ISDIR(stats.st_mode) > 0) {
+	  if(S_ISDIR(buf.st_mode) > 0) {
 		  return true;
 	  } else {
 		  return false;
 	  }
   } else {
-	  return false;
+	  printf("Error in stat call: %s", path);
+	  return 0;
   }
 }
 
 void process_path(const char*);
 
 void process_directory(const char* path) {
-  num_dirs++;
   DIR *newDir;
   struct dirent *dirEntry;
   
+  if((newDir = opendir(path)) == NULL) {
+	  printf("Error, null directory path");
+	  exit(0);
+  }
+
   chdir(path);
 
-  if ((dirEntry = readdir(newDir)) != NULL) {
+  while (dirEntry = readdir(newDir)) {
 	  if (strcmp(dirEntry->d_name, ".") != 0 && strcmp(dirEntry->d_name, "..") != 0) {
-		  num_dirs ++;
 		  process_path(dirEntry->d_name);
 	  }
   }
+  
+  num_dirs++;
   
   chdir("..");
   closedir(newDir);
 }
 
 void process_file(const char* path) {
-	num_regular++;
+	++num_regular;
 }
 
 void process_path(const char* path) {
